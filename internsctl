@@ -1,41 +1,111 @@
-.\" Manpage for internsctl
-.\" Contact abhinaba.dass@gmail.com to correct typos and errors
+#!/bin/bash
 
-.TH man "30 Dec 2020" "v0.1.0" "internsctl man page"
+# SECTION A
 
-.SH NAME
-internsctl \- custom linux command
+gethelp(){
+cat help.txt  #to display help page
+}
 
-.SH SYNOPSIS
-internsctl [FUNCTIONS]...[OPTIONS]..[FILE]
+if [[ "$@" == "--help" ]]
+then
+	gethelp
+fi
 
-.SH DESCRIPTION
-Custom Linux command which can perform various functions and also executes a function with options in order to display only specific information
+showversion(){
+echo "v0.1.0"
+}
 
-.SH FUNTIONS
-cpu getinfo        display cpu information of the server
+if [[ "$@" == "--version" ]]
+then
+        showversion
+fi
 
-memory getinfo     display memory information of the server
 
-user create <username>  creates a new user on the server
+# SECTION B (EASY)
 
-user list               lists all the users on the server
+getcpuinfo(){
+ lscpu 
+}
 
-user list --sudo-only  list all users with sudo permissions
+if [[ "$@" == "cpu getinfo" ]]
+then
+        getcpuinfo
+fi
 
-file getinfo <filename> display information about a file
+getmeminfo(){
+ free
+}
 
-file getinfo [options] <filename>
-             --size,-s         to print size
-            
-	     --permissions,-p  print file permissions
-            
-	     --owner,o         print file owner name
-            
-             --last-modified,m display last modified
+if [[ "$@" == "memory getinfo" ]]
+then
+	getmeminfo
+fi
 
-.SH BUGS
-No known bugs
 
-.SH AUTHOR
-Abhinaba Dass (abhinaba.dass@gmail.com)
+#INTERMEDIATE
+
+if [[ "$1" == "user" ]] && [[ "$2" == "create" ]]
+then
+	sudo useradd -m $3      #to add a new user and create a home directory
+fi
+
+
+listUsers(){
+cat /etc/passwd | awk -F: '{print $1}'  #to list usernames using awk interpreter
+}
+
+if [[ "$@" == "user list" ]]
+then 	
+	listUsers
+fi
+
+listSudo(){
+grep '^sudo.*$' /etc/group | cut -d: -f4   #to list all users with sudo perissions
+}
+
+if [[ "$@" == "user list --sudo-only" ]]
+then
+	listSudo
+fi
+
+# ADVANCED
+
+
+if  [[ "$1" == "file" ]]
+then
+	if [[ "$2" == "getinfo" ]]
+	then
+		if [[ "$3" == "--size" || "$3" == "-s" ]]
+		then
+			data=$(ls -s $4)    #to store the file size
+			echo ${data%$4*}
+			exit 0;
+		elif [[ "$3" == "--permissions" || "$3" == "-p" ]]
+                then
+                        data=$(stat -c %A $4)   #to store the permission 
+                        echo ${data%$4*}
+                        exit 0;
+		elif [[ "$3" == "--owner" || "$3" == "o" ]]
+                then
+                        data=$(stat -c '%U' $4)  #to store the ownername
+                        echo ${data%$4*}
+                        exit 0;
+		elif [[ "$3" == "--last-modified" || "$3" == "m" ]]
+                then
+                        data=$(stat -c '%y' $4)   #to store last modified
+                        echo ${data%$4*}
+                        exit 0;
+
+		else
+			echo "File:" "$3"
+  			data=$(stat -c %A $3)   #to store the permission 
+                        echo "Access:" ${data%$3*}
+			data=$(ls -s $3)    #to store the file size
+                        echo "Size(B):" ${data%$3*}
+			data=$(stat -c '%U' $3)  #to store the ownername
+                        echo "Owner:" ${data%$3*}
+			exit 0;
+
+		fi
+	fi
+fi
