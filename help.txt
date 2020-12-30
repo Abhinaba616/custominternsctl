@@ -1,0 +1,28 @@
+Usage: internsctl [FUNCTIONS]..[OPTIONS]..[FILE]..
+Custom linux command which can perform various functions and also executes a
+function with options in order to display only specific information.
+
+
+cpu getinfo                display cpu information of the server.
+
+memory getinfo             display memory information of the server.
+
+user create <username>     create a new user on the server.
+
+user list                  lists all the regular user present on the server.
+
+user list --sudo-only      lists all the users with sudo permissions.
+
+file getinfo <filename>    get informations about a file.
+
+file getinfo [options] <filename>     get specific informations about a file
+	     --size,-s          display size
+	     --permissions,-p   display permissions
+             --owner,o          display file owner
+	     --last-modified,m  display the last modified time stamp
+
+--help                     display this help
+--version                  output version information
+
+Author: Abhinaba Dass
+Contact abhinaba.dass@gmail.com to correct errors or typos

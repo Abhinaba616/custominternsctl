@@ -1,0 +1,41 @@
+.\" Manpage for internsctl
+.\" Contact abhinaba.dass@gmail.com to correct typos and errors
+
+.TH man "30 Dec 2020" "v0.1.0" "internsctl man page"
+
+.SH NAME
+internsctl \- custom linux command
+
+.SH SYNOPSIS
+internsctl [FUNCTIONS]...[OPTIONS]..[FILE]
+
+.SH DESCRIPTION
+Custom Linux command which can perform various functions and also executes a function with options in order to display only specific information
+
+.SH FUNTIONS
+cpu getinfo        display cpu information of the server
+
+memory getinfo     display memory information of the server
+
+user create <username>  creates a new user on the server
+
+user list               lists all the users on the server
+
+user list --sudo-only  list all users with sudo permissions
+
+file getinfo <filename> display information about a file
+
+file getinfo [options] <filename>
+             --size,-s         to print size
+            
+	     --permissions,-p  print file permissions
+            
+	     --owner,o         print file owner name
+            
+             --last-modified,m display last modified
+
+.SH BUGS
+No known bugs
+
+.SH AUTHOR
+Abhinaba Dass (abhinaba.dass@gmail.com)
